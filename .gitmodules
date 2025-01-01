@@ -1,0 +1,6 @@
+[submodule "src/hugo-theme-terminal"]
+	path = src/hugo-theme-terminal
+	url = https://github.com/panr/hugo-theme-terminal
+[submodule "src/themes/terminal"]
+	path = src/themes/terminal
+	url = https://github.com/panr/hugo-theme-terminal
