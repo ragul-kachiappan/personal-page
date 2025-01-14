@@ -1,34 +1,28 @@
-# Generated Hugo files
-/public/
-/resources/_gen/
-/hugo_stats.json
+# Hugo default output directory
+src/public/
 
-# Log files and backups
-*.log
-*.bak
-*.swp
-
-# OS-specific files
-.DS_Store
-Thumbs.db
-
-# Editor-specific files
-*.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-
-# Dependency directories
-/node_modules/
-/vendor/
+# Hugo generated resources
+src/resources/_gen/
+src/assets/jsconfig.json
 
 # Temporary files
-*.tmp
-*.temp
+src/.hugo_build.lock
+*.log
 
-# Cache files
-.cache/
-/npm-debug.log*
+# macOS system files
+.DS_Store
 
-# Optional Hugo directories
-/content/_index.md.bak
+# Windows system files
+Thumbs.db
+
+# Node modules (if you're using any npm packages)
+node_modules/
+
+# Local Netlify folder (if using Netlify)
+.netlify
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo

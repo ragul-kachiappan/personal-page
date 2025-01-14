@@ -2,7 +2,7 @@ baseURL = 'https://ragulk.com/'
 languageCode = 'en-us'
 title = "Ragul Kachiappan"
 theme = 'terminal'
-copyright = "© 2025 Your Name. All rights reserved."
+copyright = "Ragul Kachiappan. All rights reserved."
 
 [params]
   # dir name of your main content (default is `content/posts`).
@@ -67,7 +67,7 @@ copyright = "© 2025 Your Name. All rights reserved."
 [languages]
   [languages.en]
     languageName = "English"
-    title = "Terminal"
+    title = "Ragul Kachiappan"
 
     [languages.en.params]
       subtitle = "A simple, retro theme for Hugo"
@@ -89,10 +89,6 @@ copyright = "© 2025 Your Name. All rights reserved."
         logoHomeLink = "/"
 
       [languages.en.menu]
-        [[languages.en.menu.main]]
-          identifier = "about"
-          name = "About"
-          url = "/about"
         [[languages.en.menu.main]]
           identifier = "posts"
           name = "Posts"
