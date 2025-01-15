@@ -10,3 +10,23 @@
 - [ ]  seo
 - [ ]  advanced theme settings
 - [ ]  google analytics
+
+## Hugo instructions
+1. For adding new content.
+```bash
+hugo new content [path] [flags]
+```
+2. For building site.
+```bash
+hugo
+```
+3. For serving in local
+```bash
+hugo server -D # For drafts
+hugo server -t <theme>
+```
+4. After cloning repo, themes submodules need to reinstalled.
+```bash
+git submodule init
+git submodule update
+```
