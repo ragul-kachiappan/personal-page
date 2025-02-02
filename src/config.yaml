@@ -4,7 +4,7 @@ title: "Ragul Kachiappan"
 theme: "PaperMod"
 
 params:
-  defaultTheme: auto
+  defaultTheme: dark
   homeInfoParams:
     Title: "Hello there! I'm Ragul Kachiappan"
     Content: "I am a Software Engineer primarily focusing on Python, Backend, MLOps, GenAI and Cloud Infrastructure"
