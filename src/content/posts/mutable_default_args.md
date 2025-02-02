@@ -2,8 +2,8 @@
 title = "Hacky usage of mutable default arguments in Python"
 date = 2025-01-15
 draft = "true"
-tags = ["Python", "logging"]
-categories = ["Python"]
+tags = ["Python", "logging", "Functional Programming"]
+categories = ["Python", "Functional Programming"]
 +++
 
 <intro para about I always used to wonder what we can do with it>
@@ -16,38 +16,51 @@ categories = ["Python"]
 <Solution that I created with partials and mutable default args for capturing logs on series of LLM calls>
 <Disclaimer that this is not a recommended solution, just a thought process and quirky implementation>
 
-
 One of the most commonly known gotcha's in Python is the use of mutable default arguments.
 Consider this snippet below:
+
 ```python
 def foo(item: int, bar: list = []) -> None:
     bar.append(item)
-    print(f"{bar=}") # Neat f-string trick btw to print both variable name and value
+    print(
+        f"{bar=}"
+    )  # Neat f-string trick btw to print both variable name and value
+
 
 foo(6, [10])
 foo(6)
 foo(12)
 ```
+
 You would expect the output to be:
+
+```python
+bar = [10, 6]
+bar = [6]
+bar = [12]
 ```
-bar=[10, 6]
-bar=[6]
-bar=[12]
-```
+
 Instead you would get:
+
+```python
+bar = [10, 6]
+bar = [6]
+bar = [6, 12]
 ```
-bar=[10, 6]
-bar=[6]
-bar=[6, 12]
-```
+
 You would assume that the default [] empty list argument would be initialised at every function call.
 A default argument value is evaluated only once when the function is defined not when the function is called. We would be fine while using immutable values (None, str, int, bool, tuple, etc) as default. But mutable defaults like list, dictionary can lead to odd behaviours.
 This is recognized as an anti-pattern and warned off in ["Effective Python"](https://effectivepython.com/) by Brett Slakin and [The Hitchhiker's Guide to Python](https://docs.python-guide.org/writing/gotchas/)
 
 I would also test this among interview candidates occasionally to see if they were aware of this behaviour or at least if they pondered about it at that moment.
 
+Recently, I was building a Chatbot in Django with LLM service provided by OpenAI API.
+I needed to log details about each API call in DB and a query to chatbot could entail a sequence of API calls. I wanted to efficiently collect and write those logs to DB after completion of Query session. Writing to DB after each API call would be slightly inefficient and honestly, I wanted to over-engineer this just for my satisfaction.
+The obvious way to do this would be OOP implemention. We define a class to collect those logs and update the object upon API call.
+Being able store state in a template is ofcourse the main crux of OOP. But I wondered whether I can do it in Functional Programming. Functional Programming does like to keep things pure and immutable, but still provides some gimmicks to have state attached to it. Basically, I wanted this to be not OOP but more sophisticated than list.append().
 
-Recently, I was building a Chatbot with LLM service provided by OpenAI API.
+Partials are a great way to approach this. You can pre-emptively initialize some of the function arguments and use that during function call. So I thought if I initialize a partial function with empty list, I could exploit default argument behaviour to append logs to it and them save them to DB after the session ends.
+
 ```python
 def create_node_history_hook(
     mutable_log_trace: list[openai_client_utils.OpenAINodeRunLog],
