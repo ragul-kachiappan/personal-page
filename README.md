@@ -1,8 +1,10 @@
 # personal-page
 
-# TODO
-- [ ]  basic site
-- [ ]  azure swa
-- [ ]  github workflow
-- [ ]  cloudflare caching
+## TODO
+
+- [x]  basic site
+- [x]  cloudflare deployement
+- [x]  github workflow
+- [ ]  papermod theme
+- [ ]  new contents
 - [ ]  google analytics
