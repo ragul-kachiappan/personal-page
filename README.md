@@ -1,5 +1,7 @@
 # personal-page
 
+Theme used: [papermod](https://github.com/adityatelange/hugo-PaperMod)
+
 ## TODO
 
 - [x]  basic site
