@@ -4,3 +4,6 @@
 [submodule "src/themes/terminal"]
 	path = src/themes/terminal
 	url = https://github.com/panr/hugo-theme-terminal
+[submodule "src/themes/PaperMod"]
+	path = src/themes/PaperMod
+	url = https://github.com/adityatelange/hugo-PaperMod.git

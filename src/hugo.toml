@@ -1,7 +1,7 @@
 baseURL = 'https://ragulk.com/'
 languageCode = 'en-us'
 title = "Ragul Kachiappan"
-theme = 'terminal'
+theme = 'PaperMod'
 copyright = "Ragul Kachiappan. All rights reserved."
 
 [params]
