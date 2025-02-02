@@ -17,4 +17,3 @@ Add draft = true in content metadata
 hugo server -D
 ```
 Set draft = false after content completion.
-
