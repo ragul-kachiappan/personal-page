@@ -1,0 +1,9 @@
+[project]
+name = "personal-page"
+version = "0.1.0"
+description = "Hugo based static site code base for personal web page"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pre-commit>=4.1.0",
+]

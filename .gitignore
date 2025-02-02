@@ -26,3 +26,5 @@ node_modules/
 .vscode/
 *.swp
 *.swo
+
+.dev_test/
