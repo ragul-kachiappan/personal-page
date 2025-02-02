@@ -2,6 +2,8 @@
 title = "GNU parallel | Multiprocessing, easy parallelism for your data processing workloads"
 date = 2025-01-15
 draft = "true"
+tags = ["Concurrency", "Python", "Linux", "Powershell"]
+categories = ["Concurrent Programming"]
 +++
 <blabber about parallelism, its ecosystem and complexity>
 <Talk about the task at hand, show a small diagram>
@@ -67,4 +69,3 @@ Workflow persistence capabilities that aren't present in GNU Parallel/multiproce
 
 The closest analog to GNU Parallel would be ForEach-Object -Parallel (introduced in PowerShell 7), as it handles parallel execution of commands, but the underlying implementation is quite different due to the fundamental differences between Windows and Unix process models.
 ```
-

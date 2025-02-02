@@ -2,6 +2,8 @@
 title = "About uv, Ruff and mise, a 2025 way for Python project tools"
 date = 2025-01-01T13:45:47+05:30
 draft = "true"
+tags = ["environment", "Python"]
+categories = ["DX"]
 +++
 <Blabber about complexities of python project/environment management>
 <Blabber about existing workflow>

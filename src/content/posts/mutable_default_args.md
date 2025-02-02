@@ -2,6 +2,8 @@
 title = "Hacky usage of mutable default arguments in Python"
 date = 2025-01-15
 draft = "true"
+tags = ["Python", "logging"]
+categories = ["Python"]
 +++
 
 <intro para about I always used to wonder what we can do with it>
@@ -15,7 +17,7 @@ draft = "true"
 <Disclaimer that this is not a recommended solution, just a thought process and quirky implementation>
 
 
-One of the most commonly known gotcha's in Python is the use of mutable default arguments. 
+One of the most commonly known gotcha's in Python is the use of mutable default arguments.
 Consider this snippet below:
 ```python
 def foo(item: int, bar: list = []) -> None:
