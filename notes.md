@@ -23,3 +23,14 @@ hugo server -D
 ```
 
 Set draft = false after content completion.
+
+### Add a cover
+
+In the front matter. Add the below
+
+```yaml
+cover:
+  image: <path to image in static dir>
+  alt: 'alt to image'
+  caption: 'caption for the image'
+```

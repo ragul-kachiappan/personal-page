@@ -1,0 +1,33 @@
+baseURL: "https://ragulk.com/"
+languageCode: "en-us"
+title: "Ragul Kachiappan"
+theme: "PaperMod"
+enableEmoji: true
+enableGitInfo: true
+
+menu:
+  main:
+    - identifier: about
+      name: About
+      url: /about/
+      weight: 10
+    - identifier: now
+      name: Now
+      url: /now/
+      weight: 20
+    - identifier: posts
+      name: Posts
+      url: /posts/
+      weight: 30
+    - identifier: categories
+      name: Categories
+      url: /categories/
+      weight: 40
+    - identifier: tags
+      name: Tags
+      url: /tags/
+      weight: 50
+    - identifier: archives
+      name: Archives
+      url: /archives/
+      weight: 50
