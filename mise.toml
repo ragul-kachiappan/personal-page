@@ -1,0 +1,16 @@
+[env]
+_.file = '.env'
+
+[hooks.enter]
+shell = "bash"
+script = """
+uv sync --frozen
+source .venv/bin/activate
+"""
+
+[hooks.leave]
+shell = "bash"
+script = "deactivate"
+
+[tools]
+python = "3.12.8"

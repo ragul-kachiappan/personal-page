@@ -1,0 +1,59 @@
+baseURL: "https://ragulk.com/"
+languageCode: "en-us"
+title: "Ragul Kachiappan"
+theme: "PaperMod"
+
+params:
+  defaultTheme: dark
+  homeInfoParams:
+    Title: "Hello there! I'm Ragul Kachiappan"
+    Content: "I am a Software Engineer primarily focusing on Python, Backend, MLOps, GenAI and Cloud Infrastructure"
+  socialIcons:
+    - name: "github"
+      url: "https://github.com/ragul-kachiappan"
+    - name: "linkedin"
+      url: "https://linkedin.com/in/ragul-kachiappan/"
+
+  ShowReadingTime: true
+  keywords:
+    [
+      "Ragul Kachiappan",
+      "ragul k",
+      "techjays",
+      "Generative AI",
+      "MLOps",
+      "Blog",
+      "Software Engineering",
+      "Technology",
+      "Python",
+      "AWS",
+      "DX",
+      "Computer Science"
+    ]
+
+menu:
+  main:
+    - identifier: about
+      name: About
+      url: /about/
+      weight: 10
+    - identifier: now
+      name: Now
+      url: /now/
+      weight: 20
+    - identifier: posts
+      name: Posts
+      url: /posts/
+      weight: 30
+    - identifier: categories
+      name: Categories
+      url: /categories/
+      weight: 40
+    - identifier: tags
+      name: Tags
+      url: /tags/
+      weight: 50
+    - identifier: archives
+      name: Archives
+      url: /archives/
+      weight: 50
