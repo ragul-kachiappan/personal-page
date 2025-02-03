@@ -5,6 +5,8 @@
 - [x]  basic site
 - [x]  cloudflare deployement
 - [x]  github workflow
-- [ ]  papermod theme
+- [x]  papermod theme
 - [ ]  new contents
+- [ ]  seo
+- [ ]  advanced theme settings
 - [ ]  google analytics
