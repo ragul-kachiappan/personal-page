@@ -35,3 +35,33 @@ repos:
       - id: uv-lock
       - id: uv-export
         args: ["--frozen", "--no-hashes", "--output-file=requirements.txt"]
+
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.83.5
+    hooks:
+      - id: terraform_fmt
+        args:
+          - --args=-recursive
+      - id: terraform_validate
+      - id: terraform_tflint
+
+  - repo: https://github.com/aws-cloudformation/cfn-lint
+    rev: v0.83.2
+    hooks:
+      - id: cfn-python-lint
+        files: ^cloudformation/.*\.(json|ya?ml)$      # Only check files in cloudformation directory
+        # Alternatively, you could use a pattern that matches common CloudFormation template names:
+        # files: (template|stack|cfn).*\.(json|ya?ml)$
+        exclude: |
+          (?x)(
+            ^.pre-commit-config/.*\.ya?ml$|
+            ^.terraform-docs.ya?ml$|
+            ^\.tflint.hcl$
+          )
+
+  - repo: https://github.com/bridgecrewio/checkov
+    rev: 3.1.56
+    hooks:
+      - id: checkov
+        args: [--quiet, --skip-path, themes]
+        files: ^terraform/.*$
