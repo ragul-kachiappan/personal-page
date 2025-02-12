@@ -1,41 +1,29 @@
 +++
 title = "Hacky usage of mutable default arguments in Python"
-date = 2025-01-15
+date = 2025-02-12
 draft = "true"
 tags = ["Python", "logging", "Functional Programming"]
 categories = ["Python", "Functional Programming"]
 +++
 
-<intro para about I always used to wonder what we can do with it>
-<interview example that I used to ask that to test this knowledge>
-<quote from intermediate python book about violation in mutable default argument>
-<quote another reference from python reference in internet>
-<blabber bit OOP and state>
-<How we can replicate that state behaviour with partials>
-<Talk about your problem of logging>
-<Solution that I created with partials and mutable default args for capturing logs on series of LLM calls>
-<Disclaimer that this is not a recommended solution, just a thought process and quirky implementation>
-
-One of the most commonly known gotcha's in Python is the use of mutable default arguments.
-Consider this snippet below:
+One of the most commonly known gotchas in Python is the use of mutable default arguments.
+Consider this simple Python function snippet:
 
 ```python
 def foo(item: int, bar: list = []) -> None:
     bar.append(item)
-    print(
-        f"{bar=}"
-    )  # Neat f-string trick btw to print both variable name and value
+    print(f"{bar=}")  # Neat f-string trick btw to print both variable name and value
 
 
-foo(6, [10])
+foo(6)
 foo(6)
 foo(12)
 ```
 
-You would expect the output to be:
+A Python newcomer might expect the output to be:
 
 ```python
-bar = [10, 6]
+bar = [6]
 bar = [6]
 bar = [12]
 ```
@@ -43,100 +31,140 @@ bar = [12]
 Instead you would get:
 
 ```python
-bar = [10, 6]
 bar = [6]
-bar = [6, 12]
+bar = [6, 6]
+bar = [6, 6, 12]
 ```
 
-You would assume that the default [] empty list argument would be initialised at every function call.
-A default argument value is evaluated only once when the function is defined not when the function is called. We would be fine while using immutable values (None, str, int, bool, tuple, etc) as default. But mutable defaults like list, dictionary can lead to odd behaviours.
-This is recognized as an anti-pattern and warned off in ["Effective Python"](https://effectivepython.com/) by Brett Slakin and [The Hitchhiker's Guide to Python](https://docs.python-guide.org/writing/gotchas/)
+You would assume that the default [] empty list argument would be initialised at every function call. The reason is that default arguments in Python are evaluated once at function definition time, not each time the function is called. Mutable objects like lists and dictionaries, once created as defaults, will be shared across all calls to the same function that don’t provide an explicit value. This behaviour is well documented in sources like ["Effective Python"](https://effectivepython.com/) by Brett Slakin and [The Hitchhiker's Guide to Python](https://docs.python-guide.org/writing/gotchas/)
 
-I would also test this among interview candidates occasionally to see if they were aware of this behaviour or at least if they pondered about it at that moment.
+## Exploiting the behaviour: A hack for state retention
 
-Recently, I was building a Chatbot in Django with LLM service provided by OpenAI API.
-I needed to log details about each API call in DB and a query to chatbot could entail a sequence of API calls. I wanted to efficiently collect and write those logs to DB after completion of Query session. Writing to DB after each API call would be slightly inefficient and honestly, I wanted to over-engineer this just for my satisfaction.
-The obvious way to do this would be OOP implemention. We define a class to collect those logs and update the object upon API call.
-Being able store state in a template is ofcourse the main crux of OOP. But I wondered whether I can do it in Functional Programming. Functional Programming does like to keep things pure and immutable, but still provides some gimmicks to have state attached to it. Basically, I wanted this to be not OOP but more sophisticated than list.append().
+While using mutable defaults is widely recognized as an anti-pattern for everyday programming, I started exploring on whether this persistent state can be used to temporarily collect something on between repeated calls to the same function.
 
-Partials are a great way to approach this. You can pre-emptively initialize some of the function arguments and use that during function call. So I thought if I initialize a partial function with empty list, I could exploit default argument behaviour to append logs to it and them save them to DB after the session ends.
+For instance, I once needed to log info from a series of API calls in a Chatbot that uses OpenAI API. Each query to Chatbot would make multiple LLM API calls to arrive at an answer. I needed to save those logs to database but saving to DB after each API call would introduce unnecessary DB writes. I wanted to accumulate logs in a temporary "bucket" and write them to DB once the session is complete.
+
+Here’s an example that uses a mutable default to accumulate log entries:
 
 ```python
-def create_node_history_hook(
-    mutable_log_trace: list[openai_client_utils.OpenAINodeRunLog],
-):
-    """
-    Creates a hook function for logging and dumping node history.
+from dataclasses import dataclass
 
-    This function returns a closure that can be used to log OpenAI node runs
-    and periodically dump them to the database.
 
-    Args:
-        mutable_log_trace (list[openai_client_utils.OpenAINodeRunLog]):
-            A mutable list to store log traces temporarily.
+@dataclass
+class APICallLog:
+    message: str
+    timestamp: float
 
-    Returns:
-        Callable: A hook function that can be called to log runs or dump to database.
 
-    The returned hook function has the following signature:
-        node_history_hook(
-            log: openai_client_utils.OpenAINodeRunLog | None = None,
-            dump: bool = False,
-            extra_data: dict | None = None,
-        ) -> None
+def call_logger(
+    log: APICallLog | None = None,
+    dump: bool = False,
+    mutable_log_trace: list[APICallLog] = [],
+) -> None:
+    if not log and not dump:
+        raise Exception("No log provided and dump not set")
+    if log:
+        mutable_log_trace.append(log)
+    if dump:
+        # Process logs (for example, write to DB)
+        print(f"Dumping {len(mutable_log_trace)} logs")
+        mutable_log_trace.clear()
 
-    Hook function args:
-        log (openai_client_utils.OpenAINodeRunLog | None): Log object to append.
-        dump (bool): If True, dumps the collected logs to the database.
-        extra_data (dict | None): Additional data to include in the database entry.
 
-    Raises:
-        RuntimeError: If an unexpected error occurs during bulk create.
-        ValueError: If both log and dump are False.
+# Using the logger
+logger = call_logger
 
-    Example:
-        log_trace = []
-        hook = create_node_history_hook(mutable_log_trace=log_trace)
-        hook(log=some_log_object)  # Logs a run
-        hook(dump=True)  # Dumps logs to database
-    """
+logger(log=APICallLog("foo", 1.0))
+logger(log=APICallLog("bar", 2.0))
+logger(dump=True)
+```
 
-    def node_history_hook(
-        log: openai_client_utils.OpenAINodeRunLog | None = None,
-        dump: bool = False,
-        extra_data: dict | None = None,
-    ) -> None:
+At first glance, this seems like a neat way to “remember” state between calls without resorting to classes. However, the problem becomes apparent when you try to use multiple independent loggers:
+
+```python
+logger1 = call_logger
+logger2 = call_logger
+
+logger1(log=APICallLog("foo", 1.0))
+logger1(log=APICallLog("bar", 2.0))
+logger2(log=APICallLog("hello", 3.0))
+logger2(log=APICallLog("world", 4.0))
+logger1(dump=True)
+```
+
+Both logger1 and logger2 share the same default list, leading to an unintended merge of log entries.
+
+Instead of writing a Class based solution, I experimented with a stateful function by relying on a mutable default argument.
+While Functional Programming emphasizes pure functions and immutability, it still provides mechanisms like closures and partials for handling state when necessary. It should be more sophisticated than directly mutating a global list, but lighter than a full OOP implementation.
+
+## Better Alternatives: Closures and Partials
+
+To avoid this pitfall while still keeping a functional flavor (and without resorting to OOP), you can “encapsulate” state in a closure or bind it with a partial.
+
+### Using Closures
+
+Closures allow you to define a function that captures variables from its enclosing scope. Here’s how you can create a stateful logger using a closure:
+
+```python
+def create_call_logger() -> callable:
+    mutable_log_trace: list[APICallLog] = []
+
+    def call_logger(log: APICallLog | None = None, dump: bool = False) -> None:
+        if not log and not dump:
+            raise Exception("No log provided and dump not set")
         if log:
             mutable_log_trace.append(log)
-
         if dump:
-            try:
-                node_history = [
-                    models.LLMNodeRunLog(
-                        node_name=midalloy_chat_app_constants.LLMNodeNames(
-                            log_obj.node_name
-                        ),
-                        llm_prompt=log_obj.llm_prompt,
-                        llm_functions=log_obj.llm_functions,
-                        llm_response=log_obj.llm_response,
-                        tokens_used={
-                            "prompt_tokens": log_obj.prompt_tokens,
-                            "completion_tokens": log_obj.completion_tokens,
-                        },
-                        is_success=log_obj.is_success,
-                        start_time=log_obj.start_time,
-                        end_time=log_obj.end_time,
-                        **(extra_data or {}),
-                    )
-                    for log_obj in mutable_log_trace
-                ]
-                models.LLMNodeRunLog.objects.bulk_create(node_history)
-                mutable_log_trace.clear()
-            except Exception as e:
-                raise RuntimeError(f"Unexpected error during bulk create: {e}")
+            print(f"Dumping {len(mutable_log_trace)} logs")
+            mutable_log_trace.clear()
 
-        if not log and not dump:
-            raise ValueError("At least one of log or dump must be True")
+    return call_logger
 
-    return node_history_hook
+
+logger1 = create_call_logger()
+logger2 = create_call_logger()
+
+logger1(log=APICallLog("foo", 1.0))
+logger1(log=APICallLog("bar", 2.0))
+logger2(log=APICallLog("hello", 3.0))
+logger2(log=APICallLog("world", 4.0))
+logger1(dump=True)  # Dumps only logger1's logs
 ```
+
+With closures, each logger gets its own enclosed state, preventing the accidental sharing seen with mutable default arguments.
+
+### Using Partials
+
+Another approach is to use `functools.partial` to “bake in” a fresh mutable object for each instance of your logger:
+
+```python
+from functools import partial
+
+
+def call_logger(
+    mutable_log_trace: list[APICallLog],
+    log: APICallLog | None = None,
+    dump: bool = False,
+) -> None:
+    if not log and not dump:
+        raise Exception("No log provided and dump not set")
+    if log:
+        mutable_log_trace.append(log)
+    if dump:
+        print(f"Dumping {len(mutable_log_trace)} logs")
+        mutable_log_trace.clear()
+
+
+logger1 = partial(call_logger, mutable_log_trace=[])
+logger2 = partial(call_logger, mutable_log_trace=[])
+
+logger1(log=APICallLog("foo", 1.0))
+logger1(log=APICallLog("bar", 2.0))
+logger2(log=APICallLog("hello", 3.0))
+logger2(log=APICallLog("world", 4.0))
+logger1(dump=True)
+```
+
+Here, each partial call binds its own new list as the `mutable_log_trace`. This method is concise and leverages Python’s built-in functional programming tools.
+
+Using proper logging frameworks is the ideal approach in production systems as this stateful functions may have some pitfalls when it comes to memory, error handling, debugging and concurrency. But it still demonstrates a neat Functional Programming based solutioning for simple problems we might encounter.
