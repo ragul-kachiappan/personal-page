@@ -15,6 +15,7 @@ params:
       url: "https://linkedin.com/in/ragul-kachiappan/"
 
   ShowReadingTime: true
+  ShowCodeCopyButtons: true
   keywords:
     [
       "Ragul Kachiappan",
