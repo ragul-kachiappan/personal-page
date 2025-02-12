@@ -1,7 +1,6 @@
 +++
 title = "Hacky usage of mutable default arguments in Python"
 date = 2025-02-12
-draft = "true"
 tags = ["Python", "logging", "Functional Programming"]
 categories = ["Python", "Functional Programming"]
 +++
@@ -36,25 +35,25 @@ bar = [6, 6]
 bar = [6, 6, 12]
 ```
 
-You would assume that the default [] empty list argument would be initialised at every function call. The reason is that default arguments in Python are evaluated once at function definition time, not each time the function is called. Mutable objects like lists and dictionaries, once created as defaults, will be shared across all calls to the same function that don’t provide an explicit value. This behaviour is well documented in sources like ["Effective Python"](https://effectivepython.com/) by Brett Slakin and [The Hitchhiker's Guide to Python](https://docs.python-guide.org/writing/gotchas/)
+You would assume that the default [] empty list argument would be initialized at every function call. The reason is that default arguments in Python are evaluated once at function definition time, not each time the function is called. Mutable objects like lists and dictionaries, once created as defaults, will be shared across all calls to the same function that don’t provide an explicit value. This behavior is well documented in sources like ["Effective Python"](https://effectivepython.com/) by Brett Slakin and [The Hitchhiker's Guide to Python](https://docs.python-guide.org/writing/gotchas/)
+
+---
 
 ## Exploiting the behaviour: A hack for state retention
 
-While using mutable defaults is widely recognized as an anti-pattern for everyday programming, I started exploring on whether this persistent state can be used to temporarily collect something on between repeated calls to the same function.
+While using mutable defaults is widely recognized as an anti-pattern for everyday programming, I started exploring whether this persistent state can be used to temporarily collect something on between repeated calls to the same function.
 
-For instance, I once needed to log info from a series of API calls in a Chatbot that uses OpenAI API. Each query to Chatbot would make multiple LLM API calls to arrive at an answer. I needed to save those logs to database but saving to DB after each API call would introduce unnecessary DB writes. I wanted to accumulate logs in a temporary "bucket" and write them to DB once the session is complete.
+For instance, I once needed to log info from a series of API calls in a Chatbot that uses OpenAI API. Each query to Chatbot would make multiple LLM API calls to arrive at an answer. I needed to save those logs to the database, but saving to DB after each API call would introduce unnecessary DB writes. I wanted to accumulate logs in a temporary "bucket" and write them to DB once the session is complete.
 
 Here’s an example that uses a mutable default to accumulate log entries:
 
 ```python
 from dataclasses import dataclass
 
-
 @dataclass
 class APICallLog:
     message: str
     timestamp: float
-
 
 def call_logger(
     log: APICallLog | None = None,
@@ -79,6 +78,12 @@ logger(log=APICallLog("bar", 2.0))
 logger(dump=True)
 ```
 
+**Output:**
+
+```python
+Dumping 2 logs
+```
+
 At first glance, this seems like a neat way to “remember” state between calls without resorting to classes. However, the problem becomes apparent when you try to use multiple independent loggers:
 
 ```python
@@ -92,10 +97,18 @@ logger2(log=APICallLog("world", 4.0))
 logger1(dump=True)
 ```
 
-Both logger1 and logger2 share the same default list, leading to an unintended merge of log entries.
+**Output:**
 
-Instead of writing a Class based solution, I experimented with a stateful function by relying on a mutable default argument.
-While Functional Programming emphasizes pure functions and immutability, it still provides mechanisms like closures and partials for handling state when necessary. It should be more sophisticated than directly mutating a global list, but lighter than a full OOP implementation.
+```python
+Dumping 4 logs
+```
+
+Both `logger1` and `logger2` share the same default list, leading to an unintended merge of log entries.
+
+Instead of writing a class-based solution, I experimented with a stateful function by relying on a mutable default argument.
+While Functional Programming emphasizes pure functions and immutability, it still provides mechanisms like closures and partials for handling state when necessary. It should be more sophisticated than directly mutating a global list but lighter than a full OOP implementation.
+
+---
 
 ## Better Alternatives: Closures and Partials
 
@@ -129,6 +142,14 @@ logger1(log=APICallLog("bar", 2.0))
 logger2(log=APICallLog("hello", 3.0))
 logger2(log=APICallLog("world", 4.0))
 logger1(dump=True)  # Dumps only logger1's logs
+logger2(dump=True)  # Dumps only logger2's logs
+```
+
+**Output:**
+
+```python
+Dumping 2 logs
+Dumping 2 logs
 ```
 
 With closures, each logger gets its own enclosed state, preventing the accidental sharing seen with mutable default arguments.
@@ -139,7 +160,6 @@ Another approach is to use `functools.partial` to “bake in” a fresh mutable 
 
 ```python
 from functools import partial
-
 
 def call_logger(
     mutable_log_trace: list[APICallLog],
@@ -154,7 +174,6 @@ def call_logger(
         print(f"Dumping {len(mutable_log_trace)} logs")
         mutable_log_trace.clear()
 
-
 logger1 = partial(call_logger, mutable_log_trace=[])
 logger2 = partial(call_logger, mutable_log_trace=[])
 
@@ -163,8 +182,14 @@ logger1(log=APICallLog("bar", 2.0))
 logger2(log=APICallLog("hello", 3.0))
 logger2(log=APICallLog("world", 4.0))
 logger1(dump=True)
+logger2(dump=True)
 ```
 
-Here, each partial call binds its own new list as the `mutable_log_trace`. This method is concise and leverages Python’s built-in functional programming tools.
+**Output:**
 
-Using proper logging frameworks is the ideal approach in production systems as this stateful functions may have some pitfalls when it comes to memory, error handling, debugging and concurrency. But it still demonstrates a neat Functional Programming based solutioning for simple problems we might encounter.
+```python
+Dumping 2 logs
+Dumping 2 logs
+```
+
+Using proper logging frameworks is the ideal approach in production systems as these stateful functions may have some pitfalls when it comes to memory, error handling, debugging, and concurrency. But it still demonstrates a neat Functional Programming-based solution for simple problems we might encounter.
