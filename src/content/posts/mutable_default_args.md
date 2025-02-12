@@ -21,7 +21,7 @@ foo(12)
 
 A Python newcomer might expect the output to be:
 
-```python
+```text
 bar = [6]
 bar = [6]
 bar = [12]
@@ -29,7 +29,7 @@ bar = [12]
 
 Instead you would get:
 
-```python
+```text
 bar = [6]
 bar = [6, 6]
 bar = [6, 6, 12]
@@ -50,10 +50,12 @@ Here’s an example that uses a mutable default to accumulate log entries:
 ```python
 from dataclasses import dataclass
 
+
 @dataclass
 class APICallLog:
     message: str
     timestamp: float
+
 
 def call_logger(
     log: APICallLog | None = None,
@@ -80,7 +82,7 @@ logger(dump=True)
 
 **Output:**
 
-```python
+```text
 Dumping 2 logs
 ```
 
@@ -99,7 +101,7 @@ logger1(dump=True)
 
 **Output:**
 
-```python
+```text
 Dumping 4 logs
 ```
 
@@ -147,7 +149,7 @@ logger2(dump=True)  # Dumps only logger2's logs
 
 **Output:**
 
-```python
+```text
 Dumping 2 logs
 Dumping 2 logs
 ```
@@ -160,6 +162,7 @@ Another approach is to use `functools.partial` to “bake in” a fresh mutable 
 
 ```python
 from functools import partial
+
 
 def call_logger(
     mutable_log_trace: list[APICallLog],
@@ -174,6 +177,7 @@ def call_logger(
         print(f"Dumping {len(mutable_log_trace)} logs")
         mutable_log_trace.clear()
 
+
 logger1 = partial(call_logger, mutable_log_trace=[])
 logger2 = partial(call_logger, mutable_log_trace=[])
 
@@ -187,7 +191,7 @@ logger2(dump=True)
 
 **Output:**
 
-```python
+```text
 Dumping 2 logs
 Dumping 2 logs
 ```
