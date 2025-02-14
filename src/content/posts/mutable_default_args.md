@@ -11,7 +11,9 @@ Consider this simple Python function snippet:
 ```python
 def foo(item: int, bar: list = []) -> None:
     bar.append(item)
-    print(f"{bar=}")  # Neat f-string trick btw to print both variable name and value
+    print(
+        f"{bar=}"
+    )  # Neat f-string trick btw to print both variable name and value
 
 
 foo(6)
@@ -84,6 +86,43 @@ logger(dump=True)
 
 ```text
 Dumping 2 logs
+```
+
+### Using the Logger as a Hook in API Calls
+
+Rather than embedding logging within the OpenAI API call implementation, we inject the logger as a hook. This separation of concerns decouples logging from the main logic, allowing key events—such as the initiation and completion of an API call—to be recorded independently. As a result, the core functionality remains uncluttered, while side effects like logging are managed in a modular and maintainable manner.
+
+```python
+def call_openai_api(prompt: str, logger: callable) -> str:
+    # Hook: Log the API call details
+    logger(log=APICallLog(message=f"Request: {prompt}", timestamp=time.time()))
+
+    try:
+        # -- OpenAI API call would happen here --
+        response = f"Simulated response for prompt: '{prompt}'"
+
+        # Hook: Log successful response
+        logger(
+            log=APICallLog(
+                message=f"Success: {response}", timestamp=time.time()
+            )
+        )
+        return response
+
+    except Exception as e:
+        # Hook: Log any errors
+        logger(
+            log=APICallLog(message=f"Error: {str(e)}", timestamp=time.time())
+        )
+        raise
+
+
+# Example usage:
+response1 = call_openai_api("Tell me a funny programming joke", logger)
+response2 = call_openai_api("Explain mutable default arguments", logger)
+
+# At the end of the session, dump the accumulated logs.
+logger(dump=True)
 ```
 
 At first glance, this seems like a neat way to “remember” state between calls without resorting to classes. However, the problem becomes apparent when you try to use multiple independent loggers:
