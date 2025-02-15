@@ -9,6 +9,7 @@ Theme used: [papermod](https://github.com/adityatelange/hugo-PaperMod)
 - [x]  Update about and now
 - [x]  Touch ups
 - [x]  github workflow
+- [x]  terraform management for cloudflare pages
 - [x]  cloudflare caching
 - [ ]  google analytics
 
