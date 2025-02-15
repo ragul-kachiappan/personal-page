@@ -40,3 +40,40 @@ output "record_contents" {
   }
   sensitive = true
 }
+
+# Pages Project outputs
+output "pages_project" {
+  description = "Details of the Cloudflare Pages project"
+  value = {
+    name              = cloudflare_pages_project.personal_page_project.name
+    production_branch = cloudflare_pages_project.personal_page_project.production_branch
+    created_on        = cloudflare_pages_project.personal_page_project.created_on
+    subdomain         = cloudflare_pages_project.personal_page_project.subdomain
+  }
+  sensitive = false
+}
+
+output "pages_project_build_config" {
+  description = "Build configuration for the Pages project"
+  value = {
+    build_command   = cloudflare_pages_project.personal_page_project.build_config[0].build_command
+    destination_dir = cloudflare_pages_project.personal_page_project.build_config[0].destination_dir
+    root_dir        = cloudflare_pages_project.personal_page_project.build_config[0].root_dir
+  }
+  sensitive = false
+}
+
+output "pages_deployment_configs" {
+  description = "Deployment configurations for the Pages project"
+  value = {
+    preview = {
+      env_vars  = cloudflare_pages_project.personal_page_project.deployment_configs[0].preview[0].environment_variables
+      fail_open = cloudflare_pages_project.personal_page_project.deployment_configs[0].preview[0].fail_open
+    }
+    production = {
+      env_vars  = cloudflare_pages_project.personal_page_project.deployment_configs[0].production[0].environment_variables
+      fail_open = cloudflare_pages_project.personal_page_project.deployment_configs[0].production[0].fail_open
+    }
+  }
+  sensitive = false
+}

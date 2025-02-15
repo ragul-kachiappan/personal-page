@@ -16,11 +16,6 @@ variable "cloudflare_account_id" {
   sensitive   = true
 }
 
-variable "cloudflare_email" {
-  type        = string
-  description = "Cloudflare email"
-  sensitive   = true
-}
 
 variable "cloudflare_record_content" {
   type        = string
