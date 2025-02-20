@@ -61,3 +61,12 @@ cover:
   alt: 'alt to image'
   caption: 'caption for the image'
 ```
+
+## License
+
+This repository uses dual licensing:
+
+- **Blog Content** (`/content`): CC BY-NC-ND 4.0
+- **Technical Components** (Hugo configs, Terraform, scripts): MIT License
+
+See [LICENSE.md](LICENSE.md) for details.
