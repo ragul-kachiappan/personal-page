@@ -306,7 +306,7 @@ def custom_exception_handler(exc, context):
                     errors[field] = [str(detail)]
 
             response.data = {
-                "success": False,
+                "result": False,
                 "errors": errors,
                 "message": "Validation failed",
             }
