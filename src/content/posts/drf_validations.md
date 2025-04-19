@@ -18,7 +18,7 @@ Django REST Framework (DRF) provides opinionated ways to build modern Web APIs o
 
 One of the core components of DRF is the concept of serializers. Serializers facilitate easy mapping of data between request/response payloads and database models. They also handle necessary validations and transformations, allowing for clean separation of concerns in request/response handling. While there are criticisms regarding serializers' performance compared to modern type hint-based approaches like FastAPI, they remain reliable and straightforward to implement.
 
-Let's consider a common example: defining a Signup API. The client collects required details from a form and sends them via a POST request:
+Let's consider a common example: defining a Signup API. The client collects required details from a form and sends them via a POST request and below is the DRF snippet for handling request:
 
 ```python
 class SignupView(views.APIView):
@@ -56,7 +56,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 ## Custom Validations
 
-DRF provides basic validations such as `required`, but often we need custom validation requirements for specific fields and customized error responses.
+DRF provides basic validations such as `required`, but often we need custom validation requirements for specific fields and customized error responses. Let's take a look at how we can implement custom validation logic as a method inside serializer.
 
 ### Field-level Validations
 
