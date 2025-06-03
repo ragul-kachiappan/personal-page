@@ -47,6 +47,10 @@ menu:
       name: Posts
       url: /posts/
       weight: 30
+    - identifier: apps
+      name: Apps
+      url: /apps/
+      weight: 30
     - identifier: categories
       name: Categories
       url: /categories/
