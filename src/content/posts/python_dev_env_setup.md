@@ -188,8 +188,6 @@ uv sync --frozen # use lockfile strictly; don’t update it
 
   - `uv.lock` captures platform markers so one lock works across OS/arch/Python versions—useful for mixed macOS/Linux teams and CI.
 
----
-
 ### Environment Management – [direnv](https://direnv.net/)
 
 `direnv` auto-loads project-specific env on `cd` and unloads on exit, so you don’t pollute your global shell or keep re-sourcing files. It works by watching for an authorized `.envrc` (or `.env`) before each prompt and applying changes to your current shell.
@@ -210,8 +208,6 @@ Approve it with `direnv allow` (you’ll re-allow after edits; that’s the safe
 
 - `source_env .envrc.local` to pull in local, non-secret overrides.
 - `source_up` when you want to inherit a parent directory's `.envrc`.
-
----
 
 ### Task Runner & Build Automation – [Taskfile](https://taskfile.dev/)
 
@@ -269,8 +265,6 @@ tasks:
 - **Caching**: add `sources:` and `generates:` so Task skips work when outputs are up-to-date (checksum or timestamp).
 
 Task is boring—in the good way. One file, readable YAML, fast feedback with `--watch`, and fewer bespoke shell scripts cluttering your repo.
-
----
 
 ### Multi-Utility Runtime Version Management - [mise](https://mise.jdx.dev/)
 
@@ -438,8 +432,6 @@ docstring-code-format = true
 docstring-code-line-length = "dynamic"
 ```
 
----
-
 ### Git Hooks and Code Quality – [pre-commit](https://pre-commit.com/)
 
 Ruff gives you consistency; **pre-commit** makes it non-optional. It’s a multi-language Git-hook manager that installs and runs your chosen checks automatically at commit time (and other stages, if you configure them), giving fast feedback before code ever hits CI. You list hooks in `.pre-commit-config.yaml`, and the tool handles isolated environments for each hook—even bootstrapping the runtimes they need.
@@ -553,6 +545,8 @@ Automates testing across multiple Python versions and dependency combinations in
 
 - **[tox](https://tox.readthedocs.io/)** - Standard tool for testing across Python versions and environments
 - **[nox](https://nox.thea.codes/)** - Python-based alternative to tox with more flexible configuration
+
+---
 
 ## Development Environment Setup
 
@@ -679,6 +673,8 @@ Linux is de-facto standard for servers and cloud compute environments. For insta
 - **[Linux commands cheatsheet](https://phoenixnap.com/kb/linux-commands-cheat-sheet)** - Common commands you might need to use regularly
 - **[tldr](https://tldr.sh/)** - Simplified man pages with practical examples
 
+---
+
 ### Observability
 
 #### Logging Best Practices
@@ -705,6 +701,8 @@ Production error tracking and application performance monitoring for identifying
 - **[Sentry](https://sentry.io/)** - Error tracking with context, grouping, and alerting
 - **[Rollbar](https://rollbar.com/)** - Real-time error tracking and debugging
 - **[Datadog](https://www.datadoghq.com/)** / **[New Relic](https://newrelic.com/)** - Full-stack monitoring with metrics and traces
+
+---
 
 ## Conclusion
 
