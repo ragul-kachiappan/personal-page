@@ -190,7 +190,7 @@ uv sync --frozen # use lockfile strictly; don’t update it
 
 ### Environment Management – [direnv](https://direnv.net/)
 
-`direnv` auto-loads project-specific env on `cd` and unloads on exit, so you don’t pollute your global shell or keep re-sourcing files. It works by watching for an authorized `.envrc` (or `.env`) before each prompt and applying changes to your current shell.
+`direnv` auto-loads project-specific env on `cd` and unloads on exit, so you don’t pollute your global shell or keep re-sourcing files. Every time you hit enter in the terminal, `direnv` checks whether the current folder has an approved `.envrc` (or `.env`) file. If it does, it loads or unloads the environment variables accordingly.
 
 **Setup (once):** install and add the shell hook, e.g. `eval "$(direnv hook zsh)"` in `~/.zshrc` (or `bash` in `~/.bashrc`), then restart your shell.
 
@@ -207,11 +207,11 @@ Approve it with `direnv allow` (you’ll re-allow after edits; that’s the safe
 **Nice extras (keep it lean):**
 
 - `source_env .envrc.local` to pull in local, non-secret overrides.
-- `source_up` when you want to inherit a parent directory's `.envrc`.
+- Use `source_up if you want your project to also pull in environment settings defined in a parent folder.
 
 ### Task Runner & Build Automation – [Taskfile](https://taskfile.dev/)
 
-A simple, cross-platform task runner that keeps “tiny scripts” in one YAML, with smart caching and built-in watch mode. Install via Homebrew/Snap/Go; then run tasks with `task <name>`. More legible than `makefile`
+Taskfile is a lightweight, cross-platform tool where you can collect small automation scripts inside a single YAML file. It supports caching and can automatically re-run tasks when files change. Install via Homebrew/Snap/Go; then run tasks with `task <name>`. More legible than `makefile`
 
 **Minimal `Taskfile.yml`**
 
@@ -260,7 +260,7 @@ tasks:
 
 #### Nice extras (keep it lean)
 
-- **Includes**: split Docker/DB tasks into `DockerTasks.yml` and call with a namespace: `includes: { docker: ./DockerTasks.yml }` → run `task docker:start`.
+- You can separate Docker-specific tasks into a file like `DockerTasks.yml` and then bring them into your main config with an `includes` directive. This lets you run them under a namespace, for example `task docker:start`.
 - **Env control**: put env at root (`env:`) or per task; `.env` files via `dotenv:`; task-level dotenv allowed.
 - **Caching**: add `sources:` and `generates:` so Task skips work when outputs are up-to-date (checksum or timestamp).
 
@@ -284,7 +284,7 @@ _.file = ".env"
 DEBUG = "True"
 DJANGO_SETTINGS_MODULE = "myproject.settings.dev"
 
-# Auto-activate virtual environment
+# Mise can also auto-create a project-specific virtual environment—just set the path (for example, .venv) in the configuration.
 _.python.venv = { path = ".venv", create = true }
 
 [tasks.dev]
@@ -315,7 +315,7 @@ leave = "echo 'Leaving project'"
 - **Automatic tool installation**: First `cd` into project downloads Python 3.11 if missing
 - **Hooks**: Run setup commands, start services, or cleanup on enter/leave
 - **Task dependencies**: `depends = ["test", "lint"]` runs tasks in order
-- **Global + per-project configs**: Set global Python version, override per project
+- **Global + per-project configs**: You can configure a default Python version system-wide, and then override it at the project level when needed.
 
 ⚠️ **Fair warning**: Mise is relatively new (2023+) and still gaining traction. While actively developed and fast, it has a smaller community than established tools like pyenv. Worth trying for new projects, but consider the ecosystem maturity for critical production workflows.
 
@@ -331,7 +331,7 @@ Here's a snippet for ruff configuration I use in my projects
 
 ```toml
 [tool.ruff]
-# Directories and files to exclude from linting and formatting
+# Paths and files you don’t want Ruff to lint or format
 exclude = [
     ".bzr",
     ".direnv",
@@ -392,7 +392,7 @@ select = [
 ignore = [
     "E501",  # Line too long (handled by formatter)
     "E203",  # Whitespace before ':' (Black compatibility)
-    "W503",  # Line break before binary operator (Black compatibility)
+    "W503",  # handle line breaks around binary operators (to match Black’s formatting style)
 ]
 # Allow Ruff to automatically fix these violations
 fixable = ["ALL"]
