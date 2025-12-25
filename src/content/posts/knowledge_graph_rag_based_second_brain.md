@@ -89,15 +89,15 @@ I implemented an **LLM-powered query classifier** that routes queries to differe
 
 ```bash
 ┌───────────────────────────────────────────────────────────────────────────┐
-│                           Executive Query                                  │
+│                           Executive Query                                 │
 └───────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌───────────────────────────────────────────────────────────────────────────┐
-│                      LLM Query Classification                              │
-│   • Analyze intent and complexity                                          │
-│   • Route to appropriate search strategy                                   │
-│   • Provide confidence scoring                                             │
+│                      LLM Query Classification                             │
+│   • Analyze intent and complexity                                         │
+│   • Route to appropriate search strategy                                  │
+│   • Provide confidence scoring                                            │
 └───────────────────────────────────────────────────────────────────────────┘
                                     │
           ┌─────────────┬───────────┼───────────┬─────────────┐
