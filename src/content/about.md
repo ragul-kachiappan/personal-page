@@ -41,7 +41,7 @@ My core competencies include:
 
 ## Dev Environment
 
-Since I mostly do stuff in Python, my ecosystem is curated for that. I mostly use linux for OS, WSL2 if in windows. I use Cursor nowadays for IDE but prefer lazyvim for quick stuffs. I like Vim motions and prefer using it whenever I can.
+My workflow is centered around Python, so I’ve tailored my environment accordingly. I primarily use Linux (or WSL2 when on Windows). These days, Cursor is my main IDE, but for quick tasks I reach for LazyVim. I really enjoy Vim motions and integrate them into my workflow whenever possible.
 
 ## Interests outside Software Development
 
