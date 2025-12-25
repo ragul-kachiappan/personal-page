@@ -340,6 +340,7 @@ Whether this particular approach gains traction remains to be seen. But the unde
 ## References
 
 - [Microsoft GraphRAG Paper](https://arxiv.org/abs/2404.16130) - The research that inspired this approach
+- [GraphRAG high level documentation from neo4j](https://graphrag.com/)
 - [Neo4j GraphRAG Python Library](https://neo4j.com/docs/neo4j-graphrag-python/current/) - Official library for GraphRAG patterns
 - [Obsidian](https://obsidian.md/) - The "second brain" app that inspired the organizational analogy
 - [Knowledge Graphs in Search Engines](https://en.wikipedia.org/wiki/Knowledge_Graph) - How Google uses graphs for search
